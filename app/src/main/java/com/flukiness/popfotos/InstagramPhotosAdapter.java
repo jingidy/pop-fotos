@@ -1,6 +1,7 @@
 package com.flukiness.popfotos;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         }
 
         TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
-        tvCaption.setText(photo.caption);
+        tvCaption.setText(Html.fromHtml(photo.htmlString()));
 
         ImageView imgPhoto = (ImageView) convertView.findViewById(R.id.imgPhoto);
         if (isNewView) {
