@@ -9,4 +9,8 @@ public class InstagramPhoto {
     public String imageURL;
     public int imageHeight;
     public int numLikes;
+
+    public String toString() {
+        return username + " \"" + caption + "\" (" + imageURL + ")";
+    }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -14,15 +15,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public class StreamActivity extends Activity {
     private static final String CLIENT_ID="d0ef8282aa61438db297b019420ce2f9";
     private static final String POPULAR_PHOTOS_URL="https://api.instagram.com/v1/media/popular?client_id=";
 
+    private ArrayList<InstagramPhoto> photos;
+    private InstagramPhotosAdapter photosAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stream);
+
+        // Initialize members.
+        photos = new ArrayList<InstagramPhoto>();
+        photosAdapter = new InstagramPhotosAdapter(this, photos);
+        ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
+        lvPhotos.setAdapter(photosAdapter);
+
         fetchPopularPhotos();
     }
 
@@ -54,6 +67,7 @@ public class StreamActivity extends Activity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                photos.clear();
                 JSONArray photosJson = null;
                 try {
                     photosJson = response.getJSONArray("data");
@@ -61,13 +75,20 @@ public class StreamActivity extends Activity {
                         JSONObject photoJson = photosJson.getJSONObject(i);
                         InstagramPhoto photo = new InstagramPhoto();
                         photo.username = photoJson.getJSONObject("user").getString("username");
-                        photo.caption = photoJson.getJSONObject("caption").getString("text");
                         photo.numLikes = photoJson.getJSONObject("likes").getInt("count");
 
                         JSONObject imageJson = photoJson.getJSONObject("images").getJSONObject("standard_resolution");
                         photo.imageURL = imageJson.getString("url");
                         photo.imageHeight = imageJson.getInt("height");
+                        photos.add(photo);
+
+                        JSONObject captionJson = photoJson.getJSONObject("caption");
+                        if (captionJson != null) {
+                            photo.caption =captionJson.getString("text");
+                        }
                     }
+
+                    photosAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
