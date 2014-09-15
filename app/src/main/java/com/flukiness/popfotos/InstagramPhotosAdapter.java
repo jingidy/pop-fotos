@@ -2,6 +2,7 @@ package com.flukiness.popfotos;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,11 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         }
 
         TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
-        tvCaption.setText(Html.fromHtml(photo.htmlString()));
+        if (photo.caption != null) {
+            tvCaption.setText(formmattedComment(photo.user, photo.caption));
+        } else {
+            tvCaption.setVisibility(View.GONE);
+        }
 
         TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
         tvUsername.setText(photo.user.username);
@@ -74,5 +79,11 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
             return df.format(time);
 
         }
+    }
+
+    private CharSequence formmattedComment(User user, String comment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<b>").append(user.username).append("</b>").append(" ").append(comment);
+        return Html.fromHtml(sb.toString());
     }
 }
