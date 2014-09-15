@@ -44,7 +44,9 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/vUserImgContainer"
             android:layout_toEndOf="@+id/vUserImgContainer"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:textColor="#ffc44554"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,7 +56,8 @@
             android:layout_alignTop="@+id/vUserImgContainer"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:gravity="center_vertical|right" />
+            android:gravity="center_vertical|right"
+            android:textColor="#ffcccccc" />
 
     </RelativeLayout>
 
@@ -107,10 +110,10 @@
 
             <ImageView
                 android:id="@+id/imgLikesIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="12dp"
+                android:layout_height="20dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/ic_heart" />
 
             <TextView
                 android:id="@+id/tvLikesCount"
@@ -118,7 +121,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|left"
                 android:layout_marginLeft="5dp"
-                style="@android:style/TextAppearance.Small" />
+                style="@android:style/TextAppearance.Small"
+                android:textColor="#FFCCCCCC"/>
 
         </LinearLayout>
 
@@ -130,10 +134,10 @@
 
             <ImageView
                 android:id="@+id/imgCommentsIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="12dp"
+                android:layout_height="20dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/ic_comment" />
 
             <LinearLayout
                 android:id="@+id/vComments"

@@ -46,7 +46,7 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
 
         TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
         if (photo.caption != null) {
-            tvCaption.setText(formattedComment(photo.user, photo.caption));
+            tvCaption.setText(formattedCaption(photo.user, photo.caption));
         } else {
             tvCaption.setVisibility(View.GONE);
         }
@@ -104,9 +104,16 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         }
     }
 
+    private CharSequence formattedCaption(User user, String text) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<font color=\"#C44554\">").append(user.username).append("</font>").append(" ").append(text);
+        return Html.fromHtml(sb.toString());
+    }
+
     private CharSequence formattedComment(User user, String text) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<b>").append(user.username).append("</b>").append(" ").append(text);
+        sb.append("<font color=\"#33ACE8\">").append(user.username).append("</font>")
+                .append(" <font color=\"#666666\">").append(text).append("</font>");
         return Html.fromHtml(sb.toString());
     }
 
