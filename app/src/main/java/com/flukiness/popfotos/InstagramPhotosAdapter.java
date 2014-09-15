@@ -11,12 +11,18 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Jing Jin on 9/11/14.
  */
 public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
+    private static DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+    private static DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
+    private static long dayInMs = 24 * 60 * 60 * 1000;
 
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> photos) {
         super(context, android.R.layout.simple_list_item_1, photos);
@@ -37,6 +43,9 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
         tvUsername.setText(photo.user.username);
 
+        TextView tvPhotoTime = (TextView) convertView.findViewById(R.id.tvPhotoTime);
+        tvPhotoTime.setText(formattedTime(photo.time));
+
         ImageView imgPhoto = (ImageView) convertView.findViewById(R.id.imgPhoto);
         ImageView imgUser = (ImageView) convertView.findViewById(R.id.imgUser);
         if (isNewView) {
@@ -50,5 +59,20 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         Picasso.with(getContext()).load(photo.user.imageURL).into(imgUser);
 
         return convertView;
+    }
+
+    private String formattedTime(Date time) {
+        long now = new Date().getTime();
+        long timeLong = time.getTime();
+
+        if (timeLong + dayInMs > now) {
+            // Display time if it was posted today
+            return tf.format(time);
+        } else if (timeLong + 2 * dayInMs > now) {
+            return getContext().getString(R.string.yesterday);
+        } else {
+            return df.format(time);
+
+        }
     }
 }
