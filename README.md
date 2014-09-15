@@ -3,6 +3,10 @@ Codepath Week 1 Project: Instagram Photo Viewer
 
 # Completed User Stories
 
+## Time Taken
+
+I forgot to keep track... 10-ish hours?
+
 ## Required
 
 - [x] User can scroll through current popular photos from instagram
