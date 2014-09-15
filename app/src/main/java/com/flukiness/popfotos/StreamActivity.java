@@ -2,6 +2,7 @@ package com.flukiness.popfotos;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ public class StreamActivity extends Activity {
 
     private ArrayList<InstagramPhoto> photos;
     private InstagramPhotosAdapter photosAdapter;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +37,23 @@ public class StreamActivity extends Activity {
         photosAdapter = new InstagramPhotosAdapter(this, photos);
         ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
         lvPhotos.setAdapter(photosAdapter);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
+        // Start fetching photos now, it might take a while.
         fetchPopularPhotos();
+
+        // Set up pull to refresh.
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchPopularPhotos();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
 
@@ -60,6 +77,7 @@ public class StreamActivity extends Activity {
     }
 
     private void fetchPopularPhotos() {
+
         String requestURL = POPULAR_PHOTOS_URL + CLIENT_ID;
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -72,19 +90,32 @@ public class StreamActivity extends Activity {
                 try {
                     photosJson = response.getJSONArray("data");
                     for (int i = 0; i < photosJson.length(); i++) {
-                        JSONObject photoJson = photosJson.getJSONObject(i);
-                        InstagramPhoto photo = new InstagramPhoto();
-                        photo.username = photoJson.getJSONObject("user").getString("username");
-                        photo.numLikes = photoJson.getJSONObject("likes").getInt("count");
+                        try {
+                            JSONObject photoJson = photosJson.getJSONObject(i);
 
-                        JSONObject imageJson = photoJson.getJSONObject("images").getJSONObject("standard_resolution");
-                        photo.imageURL = imageJson.getString("url");
-                        photo.imageHeight = imageJson.getInt("height");
-                        photos.add(photo);
+                            // No point in doing anything if there isn't an image.
+                            if (photoJson.isNull("images")) {
+                                return;
+                            }
+                            JSONObject imagesJson = photoJson.getJSONObject("images");
+                            if (imagesJson.isNull("standard_resolution")) {
+                                return;
+                            }
 
-                        JSONObject captionJson = photoJson.getJSONObject("caption");
-                        if (captionJson != null) {
-                            photo.caption =captionJson.getString("text");
+                            InstagramPhoto photo = new InstagramPhoto();
+                            photo.username = photoJson.getJSONObject("user").getString("username");
+                            photo.numLikes = photoJson.getJSONObject("likes").getInt("count");
+
+                            JSONObject imageJson = imagesJson.getJSONObject("standard_resolution");
+                            photo.imageURL = imageJson.getString("url");
+                            photo.imageHeight = imageJson.getInt("height");
+                            photos.add(photo);
+
+                            if (!photoJson.isNull("caption")) {
+                                photo.caption = photoJson.getJSONObject("caption").getString("text");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -92,11 +123,13 @@ public class StreamActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.e("ERROR", "error refreshing stream: " + errorResponse);
+                swipeContainer.setRefreshing(false);
             }
         });
     }
