@@ -1,11 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:paddingBottom="40dp">
+
+    <LinearLayout
+        android:id="@+id/vPhotoHeader"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:padding="5dp" >
+
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/vUserImgContainer">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:id="@+id/imgUser" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/imgUserMask"
+                android:src="@drawable/mask_profile" />
+
+        </FrameLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/tvUsername"
+            android:gravity="center_vertical|left"
+            android:singleLine="true"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/vPhotoHeader"
         android:id="@+id/imgPhoto"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -28,4 +71,5 @@
         android:layout_alignParentEnd="true"
         android:maxLines="3"
         android:ellipsize="end"/>
+
 </RelativeLayout>

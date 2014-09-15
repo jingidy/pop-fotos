@@ -103,7 +103,11 @@ public class StreamActivity extends Activity {
                             }
 
                             InstagramPhoto photo = new InstagramPhoto();
-                            photo.username = photoJson.getJSONObject("user").getString("username");
+
+                            JSONObject userJson = photoJson.getJSONObject("user");
+                            photo.user.id = userJson.getString("id");
+                            photo.user.username = userJson.getString("username");
+                            photo.user.imageURL = userJson.getString("profile_picture");
                             photo.numLikes = photoJson.getJSONObject("likes").getInt("count");
 
                             JSONObject imageJson = imagesJson.getJSONObject("standard_resolution");

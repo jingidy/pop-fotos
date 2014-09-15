@@ -29,20 +29,25 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         boolean isNewView = convertView == null;
         if (isNewView) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
-
         }
 
         TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
         tvCaption.setText(Html.fromHtml(photo.htmlString()));
 
+        TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
+        tvUsername.setText(photo.user.username);
+
         ImageView imgPhoto = (ImageView) convertView.findViewById(R.id.imgPhoto);
+        ImageView imgUser = (ImageView) convertView.findViewById(R.id.imgUser);
         if (isNewView) {
             imgPhoto.getLayoutParams().height = imgPhoto.getLayoutParams().width;
         } else {
+            imgUser.setImageResource(0);
             //TODO reset to original loading image
             imgPhoto.setImageResource(0);
         }
         Picasso.with(getContext()).load(photo.imageURL).into(imgPhoto);
+        Picasso.with(getContext()).load(photo.user.imageURL).into(imgUser);
 
         return convertView;
     }
