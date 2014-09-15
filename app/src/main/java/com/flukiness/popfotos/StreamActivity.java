@@ -70,10 +70,7 @@ public class StreamActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     private void fetchPopularPhotos() {
@@ -86,38 +83,21 @@ public class StreamActivity extends Activity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 photos.clear();
-                JSONArray photosJson = null;
                 try {
-                    photosJson = response.getJSONArray("data");
+                    JSONArray photosJson = response.getJSONArray("data");
                     for (int i = 0; i < photosJson.length(); i++) {
                         try {
                             JSONObject photoJson = photosJson.getJSONObject(i);
-
                             // No point in doing anything if there isn't an image.
                             if (photoJson.isNull("images")) {
                                 return;
                             }
-                            JSONObject imagesJson = photoJson.getJSONObject("images");
-                            if (imagesJson.isNull("standard_resolution")) {
-                                return;
+
+                            InstagramPhoto photo = new InstagramPhoto(photoJson);
+                            if (photo.imageURL != null) {
+                                photos.add(photo);
                             }
 
-                            InstagramPhoto photo = new InstagramPhoto();
-
-                            JSONObject userJson = photoJson.getJSONObject("user");
-                            photo.user.id = userJson.getString("id");
-                            photo.user.username = userJson.getString("username");
-                            photo.user.imageURL = userJson.getString("profile_picture");
-                            photo.numLikes = photoJson.getJSONObject("likes").getInt("count");
-
-                            JSONObject imageJson = imagesJson.getJSONObject("standard_resolution");
-                            photo.imageURL = imageJson.getString("url");
-                            photo.imageHeight = imageJson.getInt("height");
-                            photos.add(photo);
-
-                            if (!photoJson.isNull("caption")) {
-                                photo.caption = photoJson.getJSONObject("caption").getString("text");
-                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

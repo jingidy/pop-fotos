@@ -1,5 +1,8 @@
 package com.flukiness.popfotos;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Jing Jin on 9/11/14.
  */
@@ -11,8 +14,25 @@ public class InstagramPhoto {
 
     public User user;
 
-    public InstagramPhoto() {
-        user = new User();
+    public InstagramPhoto(JSONObject photoJson) {
+        try {
+            JSONObject userJson = photoJson.getJSONObject("user");
+            user = new User(userJson);
+
+            JSONObject imageJson = photoJson.getJSONObject("images").getJSONObject("standard_resolution");
+            imageURL = imageJson.getString("url");
+            imageHeight = imageJson.getInt("height");
+            numLikes = photoJson.getJSONObject("likes").getInt("count");
+
+            if (!photoJson.isNull("caption")) {
+                caption = photoJson.getJSONObject("caption").getString("text");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            if (user == null) {
+                user = new User();
+            }
+        }
     }
 
     public String htmlString() {
