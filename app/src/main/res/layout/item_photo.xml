@@ -120,7 +120,7 @@
                 android:layout_marginLeft="5dp"
                 style="@android:style/TextAppearance.Small" />
 
-            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/vCommentsContainer"
@@ -135,12 +135,13 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_launcher" />
 
-            <ListView
-                android:id="@+id/lvComments"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/vComments"
+                android:orientation="vertical"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="5dp" />
 
         </LinearLayout>
 
