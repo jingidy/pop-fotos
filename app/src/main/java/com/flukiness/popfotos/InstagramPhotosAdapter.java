@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,14 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
 
         TextView tvPhotoTime = (TextView) convertView.findViewById(R.id.tvPhotoTime);
         tvPhotoTime.setText(formattedTime(photo.time));
+
+        TextView tvLikesCount = (TextView) convertView.findViewById(R.id.tvLikesCount);
+        if (photo.numLikes > 0) {
+            tvLikesCount.setText(NumberFormat.getInstance().format(photo.numLikes));
+        } else {
+            View vLikesContainer = convertView.findViewById((R.id.vLikesContainer));
+            vLikesContainer.setVisibility(View.GONE);
+        }
 
         ImageView imgPhoto = (ImageView) convertView.findViewById(R.id.imgPhoto);
         ImageView imgUser = (ImageView) convertView.findViewById(R.id.imgUser);
